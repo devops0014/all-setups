@@ -16,5 +16,6 @@ mv kops-linux-amd64 /usr/local/bin/kops
 
 export KOPS_STATE_STORE=s3://bucket-storage-k8s
    
-kops create cluster --name shiva.k8s.local --zones us-east-1a,us-east-1b, --master-count=1 --master-size m7i-flex.large --master-volume-size 28 --node-count=3 --node-size t3.micro --node-volume-size 20
-kops update luster shiva.k8s.local --yes -admin
+kops create cluster --name shiva.k8s.local --zones us-east-1a,us-east-1b --master-count=1 --master-size m7i-flex.large --master-volume-size 28 --node-count=3 --node-size t3.micro --node-volume-size 20
+kops update cluster --name shiva.k8s.local --yes --admin
+
