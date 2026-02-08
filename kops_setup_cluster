@@ -1,0 +1,20 @@
+vi .bashrc
+export PATH=$PATH:/usr/local/bin/
+source .bashrc
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+mv kubectl /usr/local/bin/
+
+wget https://github.com/kubernetes/kops/releases/download/v1.24.1/kops-linux-amd64
+chmod +x kops-linux-amd64
+mv kops-linux-amd64 /usr/local/bin/kops
+
+export KOPS_STATE_STORE=s3://bucket-storage-k8s
+   
+kops create cluster --name shiva.k8s.local --zones us-east-1a,us-east-1b, --master-count=1 --master-size m7i-flex.large --master-volume-size 28 --node-count=3 --node-size t3.micro --node-volume-size 20
+kops update luster shiva.k8s.local --yes -admin
