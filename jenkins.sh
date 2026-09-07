@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # STEP-1: UPDATE SYSTEM
@@ -50,3 +51,10 @@ systemctl status jenkins --no-pager
 echo ""
 echo "Initial Jenkins Password:"
 cat /var/lib/jenkins/secrets/initialAdminPassword
+=======
+yum install java-21-amazon-corretto -y
+sudo wget -O /etc/yum.repos.d/jenkins.repo     https://pkg.jenkins.io/rpm-stable/jenkins.repo
+yum install jenkins -y
+systemctl start jenkins
+systemctl status jenkins
+
