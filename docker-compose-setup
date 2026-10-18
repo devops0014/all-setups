@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+echo "Updating system packages..."
+sudo dnf update -y
+
+echo "Installing Docker..."
+sudo dnf install -y docker
+
+echo "Starting and enabling Docker service..."
+sudo systemctl enable docker
+sudo systemctl start docker
+
+echo "Adding ec2-user to docker group..."
+sudo usermod -aG docker ec2-user
+
+echo "Detecting architecture..."
+ARCH=$(uname -m)
+
+if [ "$ARCH" = "x86_64" ]; then
+    COMPOSE_BINARY="docker-compose-linux-x86_64"
+elif [ "$ARCH" = "aarch64" ]; then
+    COMPOSE_BINARY="docker-compose-linux-aarch64"
+else
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+fi
+
+echo "Installing Docker Compose..."
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+
+sudo curl -SL \
+"https://github.com/docker/compose/releases/latest/download/${COMPOSE_BINARY}" \
+-o /usr/local/lib/docker/cli-plugins/docker-compose
+
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+echo "Restarting Docker..."
+sudo systemctl restart docker
+
+echo ""
+echo "Docker Version:"
+docker --version
+
+echo ""
+echo "Docker Compose Version:"
+docker compose version
+
+echo ""
+echo "Installation completed successfully."
+echo "Log out and log back in (or run 'newgrp docker') before using Docker without sudo."
